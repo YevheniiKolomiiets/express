@@ -12,27 +12,17 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
-const { Pool, Client } = require('pg');
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'dictionary',
-  password: 'admin',
-  port: 5432,
-});
+const { Client } = require('pg');
 
-pool.query('SELECT NOW()', (err, res) => {
-  console.log(err, res);
-  pool.end();
-});
+const config = {
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
+};
 
-const client = new Client({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'dictionary',
-  password: 'admin',
-  port: 5432,
-});
+const client = new Client(config);
 
 client.connect();
 

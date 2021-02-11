@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use('/auth', require('./controllers/auth.js'));
+app.use('/dict', require('./controllers/dictionary.js'));
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

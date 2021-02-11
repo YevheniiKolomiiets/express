@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const { v4: uuid } = require('uuid');
 const jwt = require('jsonwebtoken');
 const db = require('./../db-client.js');
+const Config = require('../config');
 
 class AuthService {
   async register({ login, password }) {
@@ -40,7 +41,7 @@ class AuthService {
     const isPasswordCorrect = await bcrypt.compare(password, user?.password ?? '');
 
     if (isPasswordCorrect) {
-      const authToken = jwt.sign({ id: user?.id }, 'secret', { expiresIn: '24h' });
+      const authToken = jwt.sign({ id: user?.id }, Config.JWT_SECRET, { expiresIn: '24h' });
 
       return {
         id: user?.id,

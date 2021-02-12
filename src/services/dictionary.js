@@ -21,7 +21,7 @@ class DictionaryService {
 
     await db.query(
       `INSERT INTO dictionaries (id, phone, city, tariff, booked)
-       VALUES ('${id}', '${phone}', '${city}', '${tariff}', '${booked}');`,
+       VALUES ('${id}', '${phone}', '${city}', '${tariff}', '${booked ?? false}');`,
     );
 
     return { id, phone, city, tariff, booked };
@@ -42,7 +42,7 @@ class DictionaryService {
 
     await db.query(
       `UPDATE dictionaries
-       SET phone='${phone}', city='${city}', tariff='${tariff}', booked=${booked}
+       SET phone='${phone}', city='${city}', tariff='${tariff}', booked=${booked ?? false}
        WHERE id='${id}'`,
     );
 

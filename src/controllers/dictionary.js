@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const DictionaryService = require('./../services/dictionary.js');
-const privateMiddleware = require('../middleware');
+const privateMiddleware = require('../middleware/privateMiddleware.js');
+const validationMiddleware = require('../middleware/validationMiddleware.js');
+const dictionarySchema = require('../validation/dictionarySchema.js');
 
 router.get('/all', all);
-router.post('/', privateMiddleware, add);
-router.put('/:id', privateMiddleware, edit);
+router.post('/', privateMiddleware, validationMiddleware(dictionarySchema), add);
+router.put('/:id', privateMiddleware, validationMiddleware(dictionarySchema), edit);
 router.delete('/:id', privateMiddleware, remove);
 
 async function all(req, res) {

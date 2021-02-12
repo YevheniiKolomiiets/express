@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const AuthService = require('./../services/auth.js');
+const validationMiddleware = require('../middleware/validationMiddleware.js');
+const authSchema = require('../validation/authSchema.js');
 
-router.post('/register', register);
-router.post('/login', login);
+router.post('/register', validationMiddleware(authSchema), register);
+router.post('/login', validationMiddleware(authSchema), login);
 
 async function register(req, res) {
   try {

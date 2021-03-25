@@ -8,11 +8,10 @@ class AuthService {
   async register({ login, password }) {
     const {
       rows: { 0: user },
-    } = await db.query(
-      `SELECT *
-      FROM users
-      WHERE login='${login}'`,
-    );
+    } = await db.query({
+      text: 'SELECT * FROM users WHERE login=$1',
+      values: [login],
+    });
 
     if (user) {
       throw `User "${login}" already exists`;
@@ -21,10 +20,10 @@ class AuthService {
     const id = uuid();
     const hash = await bcrypt.hash(password, 10);
 
-    await db.query(
-      `INSERT INTO users (id, login, password)
-       VALUES ('${id}', '${login}', '${hash}');`,
-    );
+    await db.query({
+      text: 'INSERT INTO users (id, login, password) VALUES ($1, $2, $3);',
+      values: [id, login, hash],
+    });
 
     return { id, login };
   }
@@ -32,11 +31,10 @@ class AuthService {
   async login({ login, password }) {
     const {
       rows: { 0: user },
-    } = await db.query(
-      `SELECT *
-      FROM users
-      WHERE login='${login}'`,
-    );
+    } = await db.query({
+      text: 'SELECT * FROM users WHERE login=$1',
+      values: [login],
+    });
 
     const isPasswordCorrect = await bcrypt.compare(password, user?.password ?? '');
 

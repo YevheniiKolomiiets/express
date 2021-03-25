@@ -7,11 +7,10 @@ class DictionaryService {
   async add({ phone, city, tariff, booked }) {
     const {
       rows: { 0: existedNumber },
-    } = await db.query(
-      `SELECT *
-      FROM dictionaries
-      WHERE phone='${phone}'`,
-    );
+    } = await db.query({
+      text: 'SELECT * FROM dictionaries WHERE phone=$1',
+      values: [phone],
+    });
 
     if (existedNumber) {
       throw `Number "${existedNumber.phone}" already exists`;
@@ -19,10 +18,11 @@ class DictionaryService {
 
     const id = uuid();
 
-    await db.query(
-      `INSERT INTO dictionaries (id, phone, city, tariff, booked)
-       VALUES ('${id}', '${phone}', '${city}', '${tariff}', '${booked ?? false}');`,
-    );
+    await db.query({
+      text:
+        'INSERT INTO dictionaries (id, phone, city, tariff, booked) VALUES ($1, $2, $3, $4, $5);',
+      values: [id, phone, city, tariff, booked ?? false],
+    });
 
     return { id, phone, city, tariff, booked };
   }
@@ -40,11 +40,10 @@ class DictionaryService {
     const { id } = params;
     const { phone, city, tariff, booked } = body;
 
-    await db.query(
-      `UPDATE dictionaries
-       SET phone='${phone}', city='${city}', tariff='${tariff}', booked=${booked ?? false}
-       WHERE id='${id}'`,
-    );
+    await db.query({
+      text: 'UPDATE dictionaries SET phone=$2, city=$3, tariff=$4, booked=$5 WHERE id=$1',
+      values: [id, phone, city, tariff, booked ?? false],
+    });
 
     return {
       ...body,
@@ -53,10 +52,10 @@ class DictionaryService {
   }
 
   async remove({ id }) {
-    await db.query(
-      `DELETE FROM dictionaries
-       WHERE id='${id}'`,
-    );
+    await db.query({
+      text: 'DELETE FROM dictionaries WHERE id=$1',
+      values: [id],
+    });
 
     return { id };
   }
